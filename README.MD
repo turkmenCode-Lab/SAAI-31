@@ -1,10 +1,10 @@
----
 # Poweredby: @merdanusa
 ## Turkmen Code Lab - SAAI-31 
 
+---
+
 # Version: Beta MA-1
 # Turkmen NLP Tokenizer & Semantic Search
-
 **A Turkmen language text processing library that tokenizes input, lemmatizes, finds synonyms, removes stopwords, and performs semantic search over a knowledge base.**
 
 ---
@@ -52,7 +52,7 @@ It is built using TypeScript, Node.js, and the [`natural`](https://www.npmjs.com
 1. Clone this repository:
 
    ```bash
-   git clone https://github.com/yourusername/turkmen-nlp.git
+   git clone https://github.com/turkmenCode-Lab/SAAI-31.git
    cd turkmen-nlp
    ```
 

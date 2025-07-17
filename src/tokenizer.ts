@@ -2,9 +2,15 @@ import natural from "natural";
 import Lemmatizer from "./lemmatizer";
 import synonymController from "./synonym";
 import stopWords from "./stopwords";
-import Search from "./search";
+import Search, { Entry } from "./search";
+import Answer from "./answer";
+import runGemini from "./middleware/chat";
 
-export default async function Tokenizer(string: string) {
+export default async function Tokenizer(string: string, gemAISearch: boolean) {
+  if (gemAISearch) {
+    runGemini(string);
+  }
+
   const tokens = new natural.WordTokenizer().tokenize(string);
 
   const lemmatise = tokens ? Lemmatizer(tokens) : [];
@@ -22,7 +28,18 @@ export default async function Tokenizer(string: string) {
     ])
   );
 
-  const search = mergedWords.length ? await Search(mergedWords) : [];
+  const search: Entry | null = mergedWords.length
+    ? await Search(mergedWords)
+    : null;
 
-  return { tokens: tokens || [], lemmatise, synonym, stopwords, search };
+  const answer = search ? await Answer(search.text) : "";
+
+  return {
+    tokens: tokens || [],
+    lemmatise,
+    synonym,
+    stopwords,
+    search,
+    answer,
+  };
 }

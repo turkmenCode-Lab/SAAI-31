@@ -2,7 +2,7 @@ import * as fs from "fs/promises";
 import * as path from "path";
 import stringSimilarity from "string-similarity";
 
-type Entry = {
+export type Entry = {
   id: number;
   category: string;
   tags: string[];

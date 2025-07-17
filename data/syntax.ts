@@ -96,6 +96,32 @@ const names: string[] = [
   "Shamyrat",
 ];
 
+export const greetings: string[] = [
+  "Salam!",
+  "Hoş geldiňiz!",
+  "Assalamu Aleýkum!",
+  "Salam jan dogan!",
+  "Günüň haýyrly bolsun!",
+  "Eýläp geldiňmi?",
+  "Salam hormatly myhman!",
+  "Salam, nädip ýagdaýlaryň?",
+  "Salam, bagtly gün!",
+  "Salam, sag amanmy?",
+];
+
+export const farewells: string[] = [
+  "Hoş sag bol!",
+  "Görüşýänçä!",
+  "Sag aman bol!",
+  "Gürrüňdeş bolduk!",
+  "Hoş gal!",
+  "Özüne gowy seret!",
+  "Ýene görüşeris!",
+  "Öňüň açyk bolsun!",
+  "Salamat boluň!",
+  "Geljekde duşuşarys!",
+];
+
 const conjunctions: { tm: string; translit: string }[] = [
   { tm: "we", translit: "we" },
   { tm: "ýa", translit: "ya" },

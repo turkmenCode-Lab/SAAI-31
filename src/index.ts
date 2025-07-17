@@ -1,5 +1,7 @@
 import dotenv from "dotenv";
-dotenv.config();
+
+dotenv.config({ quiet: true });
+
 import Runner from "./utils/runner";
 import readlineSync from "readline-sync";
 

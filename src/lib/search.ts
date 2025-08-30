@@ -9,7 +9,7 @@ export type Entry = {
   text: string;
 };
 
-export default async function Search(words: string[]): Promise<Entry | null> {
+export default async function Search(words: string[]): Promise<Entry[]> {
   const filePath = path.join("D:", "Shit", "TS AI", "data", "knowledge.json");
 
   let jsonData: { data: Entry[] };
@@ -18,12 +18,11 @@ export default async function Search(words: string[]): Promise<Entry | null> {
     jsonData = JSON.parse(rawData);
   } catch (err: any) {
     console.error("Error reading or parsing JSON:", err);
-    return null;
+    return [];
   }
 
   const entries = jsonData.data;
-
-  let bestMatch: { entry: Entry; score: number } | null = null;
+  const scoredEntries: { entry: Entry; score: number }[] = [];
 
   for (const entry of entries) {
     const searchableTokens = [
@@ -51,24 +50,26 @@ export default async function Search(words: string[]): Promise<Entry | null> {
     const tagMatches = entry.tags
       .map((t) => t.toLowerCase())
       .filter((t) => inputTokens.includes(t)).length;
+
     const categoryMatch = inputTokens.includes(entry.category.toLowerCase())
       ? 1
       : 0;
+
     const maxSimilarity = Math.max(...scores);
 
     const weightedScore =
       0.5 * maxSimilarity + 0.3 * tagMatches + 0.2 * categoryMatch;
 
-    if (!bestMatch || weightedScore > bestMatch.score) {
-      bestMatch = { entry, score: weightedScore };
-    }
+    scoredEntries.push({ entry, score: weightedScore });
   }
 
-  if (bestMatch && bestMatch.score > 0.1) {
-    console.log("Best Match:", bestMatch.entry, "Score:", bestMatch.score);
-    return bestMatch.entry;
-  } else {
-    console.log("No good match found. Best score:", bestMatch?.score || 0);
-    return null;
-  }
+  scoredEntries.sort((a, b) => b.score - a.score);
+
+  const topMatches = scoredEntries
+    .filter((s) => s.score > 0.1)
+    .slice(0, 4)
+    .map((s) => s.entry);
+
+  console.log("Top Matches:", topMatches);
+  return topMatches;
 }

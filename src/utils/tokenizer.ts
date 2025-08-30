@@ -48,11 +48,9 @@ export default async function Tokenizer(
       ])
     );
 
-    const search: Entry | null = mergedWords.length
-      ? await Search(mergedWords)
-      : null;
+    const search: Entry[] = mergedWords.length ? await Search(mergedWords) : [];
 
-    const answer = search ? await Answer(search.text) : "";
+    const answer = search.length > 0 ? await Answer(search[0].text) : "";
 
     return {
       tokens: tokens || [],

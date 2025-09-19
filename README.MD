@@ -6,11 +6,11 @@
 
 ---
 
-# Version: Beta MA-1
+# Version: Beta MA-2
 
 # Turkmen NLP Tokenizer & Semantic Search
 
-**A Turkmen language text processing library that tokenizes input, lemmatizes words, identifies synonyms, removes stopwords, and performs semantic search over a knowledge base, with optional AI model integrations.**
+**A Turkmen language text processing library that tokenizes input, lemmatizes words, identifies synonyms, removes stopwords, performs semantic search over a knowledge base, detects math intents, and solves mathematical expressions.**
 
 ---
 
@@ -34,16 +34,9 @@
 
 ## About
 
-This project is a **Natural Language Processing (NLP)** pipeline tailored for the **Turkmen language**. It processes Turkmen text through tokenization, lemmatization, synonym detection, stopword removal, and semantic search over a knowledge base. Built with **TypeScript**, **Node.js**, and the [`natural`](https://www.npmjs.com/package/natural) library, it includes custom dictionaries for Turkmen suffixes, synonyms, names, and conjunctions.
+This project is a **Natural Language Processing (NLP)** pipeline tailored for the **Turkmen language**. It processes Turkmen text through tokenization, lemmatization, synonym detection, stopword removal, semantic search over a knowledge base, and math intent detection with calculation. Built with **TypeScript**, **Node.js**, and libraries like [`natural`](https://www.npmjs.com/package/natural), [`string-similarity`](https://www.npmjs.com/package/string-similarity), and [`mathjs`](https://www.npmjs.com/package/mathjs), it includes custom dictionaries for Turkmen suffixes, synonyms, names, conjunctions, and math operators.
 
-The pipeline supports local semantic search and optional integration with multiple AI models for enhanced query processing:
-
-- **Google Gemini API** (`gemini-1.5-flash`)
-- **OpenRouterAI** (`meta-llama/llama-3-8b-instruct`)
-- **DeepSeek** (`deepseek/deepseek-r1-0528:free`)
-- **KimiAI** (`moonshotai/kimi-k2:free`)
-
-This library is ideal for applications requiring text analysis, search, or chatbot-like interactions in Turkmen.
+This library is ideal for applications requiring text analysis, search, math calculations, or chatbot-like interactions in Turkmen.
 
 ---
 
@@ -54,8 +47,8 @@ This library is ideal for applications requiring text analysis, search, or chatb
 - **Synonym Controller**: Maps words to synonym groups for richer text understanding.
 - **Stopword Filter**: Removes common conjunctions (e.g., `we`, `ýa`, `çünki`) to improve search accuracy.
 - **Semantic Search**: Performs fuzzy matching with `string-similarity` over a knowledge base, considering categories, tags, and text.
-- **AI Model Integration**: Supports Google Gemini, OpenRouterAI, DeepSeek, and KimiAI for advanced query processing (requires API keys).
-- **Custom Turkmen Data**: Includes dictionaries for suffixes, synonyms, names, conjunctions, greetings, and farewells.
+- **Math Intent Detection & Calculation**: Detects math-related queries (e.g., operators like `gosmak` for `+`) and evaluates expressions using `mathjs`, supporting arithmetic, trigonometry, algebra, and more advanced functions.
+- **Custom Turkmen Data**: Includes dictionaries for suffixes, synonyms, names, conjunctions, greetings, farewells, and math operators.
 - **Interactive CLI**: Processes user queries with random greetings and farewells for a friendly experience.
 
 ---
@@ -75,16 +68,15 @@ This library is ideal for applications requiring text analysis, search, or chatb
    npm install
    ```
 
-3. **Set up environment variables**:
+   Key dependencies include:
 
-   Create a `.env` file in the project root and add API keys for the AI models you plan to use:
+   - `natural` for tokenization.
+   - `string-similarity` for fuzzy matching in search and synonyms.
+   - `mathjs` for advanced math calculations.
+   - `readline-sync` for CLI input.
+   - `fs`, `path` (built-in) for file handling.
 
-   ```env
-   GEMINI_API_KEY=your-gemini-api-key-here
-   OPENROUTER_API_KEY=your-openrouter-api-key-here
-   ```
-
-4. **Prepare the knowledge base**:
+3. **Prepare the knowledge base**:
 
    Ensure the knowledge base file is located at `D:\Shit\TS AI\data\knowledge.json` or update the file path in `src/lib/search.ts`. The knowledge base should follow this structure:
 
@@ -119,26 +111,23 @@ Nadip komek edip bilern?
 Input here: VPN-de WS barada maglumat
 ```
 
-Next, choose an AI model for search (or none):
+Next, choose a mode (Dev or Production):
 
 ```
-AI search ulanjakmy?
-1) Gemini AI - 1
-2) Open Router AI - 2
-3) DeepSeek AI - 3
-4) KIMI K2 AI - 4
-n) YOK - n
-Sayla (1-4/n): n
+Mode sayla:
+    1) Dev (Full logs)
+    2) Production (Minimal logs)
+    Sayla (1/2): 2
 ```
 
-If you select `n`, the pipeline uses local semantic search. Otherwise, the chosen AI model processes the query. The output includes:
+If math is detected, it will compute the result directly. Otherwise, it proceeds to local semantic search. The output includes:
 
 - **Tokens**: Split words from the input.
 - **Lemmatized Words**: Root forms of words.
 - **Synonyms**: Mapped synonymous words.
 - **Stopwords**: Filtered conjunctions.
 - **Search Result**: Best matching knowledge base entry (if found).
-- **Answer**: Formatted response with a random greeting and farewell.
+- **Answer**: Formatted response with a random greeting and farewell, or math result.
 
 ### Example Code Snippet
 
@@ -163,11 +152,19 @@ Runner(readlineSync.question(`Nadip komek edip bilern? \nInput here: `));
 
 3. **Query**: `Salam, maşyn satyn almak isleýärin`
 
-   - **Output**: Maps `maşyn` to `["maşyn", "awto", "awtomobil"]`, processes with AI model (if selected) or local search.
+   - **Output**: Maps `maşyn` to `["maşyn", "awto", "awtomobil"]`, processes with local search.
 
 4. **Query**: `Eýer kitaby nädip satyn alsam?`
 
    - **Output**: Filters `eýer`, maps `kitaby` to `kitap`, and searches for relevant entries.
+
+5. **Math Query**: `10 gosmak 10`
+
+   - **Output**: Detects math intent, translates to `10 + 10`, computes `20`.
+
+6. **Advanced Math Query**: `sinus 30 gosmak kwadrat kök 9`
+
+   - **Output**: Translates to `sin(30 deg) + sqrt(9)`, computes approximately `0.5 + 3 = 3.5`.
 
 ---
 
@@ -192,22 +189,16 @@ Bu programma Türkmen dilinde ýazylan soraglary prosessirlemek üçin niýetlen
    Input here: VPN-de WS barada maglumat
    ```
 
-3. **AI model saýlaň**:
-
-   Soragdan soň, programma AI ulanmak isleýändigiňizi sorar:
+3. **Mod saýlaň**:
 
    ```
-   AI search ulanjakmy?
-   1) Gemini AI - 1
-   2) Open Router AI - 2
-   3) DeepSeek AI - 3
-   4) KIMI K2 AI - 4
-   n) YOK - n
-   Sayla (1-4/n): n
+   Mode sayla:
+       1) Dev (Full logs)
+       2) Production (Minimal logs)
+       Sayla (1/2): 2
    ```
 
-   - `1-4`: Seçilen AI model (Gemini, OpenRouterAI, DeepSeek, ýa-da KimiAI) soragy prosessirleyär.
-   - `n`: Ýerli bilim bazasynda semantik gözleg ulanylýar.
+   Eger sorag matematika bilen baglanyşykly bolsa (mysal üçin, `gosmak`, `ayyrmak`), programma awtomatiki hasaplaýar. Başga ýagdaýda ýerli bilim bazasynda semantik gözleg ulanylýar.
 
 4. **Netijeleri göruň**:
 
@@ -218,21 +209,25 @@ Bu programma Türkmen dilinde ýazylan soraglary prosessirlemek üçin niýetlen
    - **Sinonimler**: Synonim sözler tapylýar (mysal üçin, `maşyn` → `awto`).
    - **Stopwordlar**: Gerek däl sözler aýrylýar (mysal üçin, `nädip`, `eýer`).
    - **Bilim bazasy netijesi**: Soraga iň ýakyn maglumat tapylýar.
-   - **Jogap**: Tötän salam we hoşlaşyk bilen formatlanan jogap.
+   - **Jogap**: Tötän salam we hoşlaşyk bilen formatlanan jogap, ýa-da matematika netijesi.
 
 **Mysallar**:
 
 - **Sorag**: `VPN-de WS barada maglumat`
   - **Netije**: WS bilen baglanyşykly bilim bazasyndaky maglumat we `https://vpn.ws.com/docs` sahypasyna salgylanma.
 - **Sorag**: `Salam, kitaby nädip satyn alyp bilerin?`
-  - **Netije**: `kitaby` → `kitap`, `eýer` aýrylýar, sinonimler tapylýar, degişli maglumat ýa-da AI netijesi.
+  - **Netije**: `kitaby` → `kitap`, `eýer` aýrylýar, sinonimler tapylýar, degişli maglumat.
 - **Sorag**: `xHTTP näme?`
   - **Netije**: xHTTP bilen baglanyşykly bilim bazasyndaky maglumat we `https://vpn.xhttp.com/docs` sahypasyna salgylanma.
+- **Matematika Sorag**: `10 gosmak 5 ayyrmak 2`
+  - **Netije**: `10 + 5 - 2 = 13`.
+- **Çylşyrymly Matematika**: `kub 3 gosmak sinus 90`
+  - **Netije**: `3**3 + sin(90 deg) = 27 + 1 = 28`.
 
 **Üns beriň**:
 
 - Bilim bazasy faýly (`knowledge.json`) dogry ýerde bolmaly.
-- AI ulanmak üçin `.env` faýlynda `GEMINI_API_KEY` ýa-da `OPENROUTER_API_KEY` bolmaly.
+- Matematika hasaplamalary üçin `mathjs` ulanylýar – köp funksiýalary (trigonometriýa, algebra, we ş.m.) goldaýar.
 
 ---
 
@@ -258,20 +253,21 @@ Bu programma Türkmen dilinde ýazylan soraglary prosessirlemek üçin niýetlen
    - Filters conjunctions (from `conjunctions` in `syntax.ts`) like `we`, `ýa`, `çünki`.
    - Example: `eýer kitaby alsam` → removes `eýer`.
 
-5. **Semantic Search**:
+5. **Math Intent Detection**:
+
+   - Checks for math operators (English like `+`, or Turkmen like `gosmak`) using `isMath` with fuzzy matching.
+   - If detected, translates to standard math expressions and evaluates with `mathjs`.
+   - Example: `10 gosmak 10` → `10 + 10` → `20`.
+
+6. **Semantic Search**:
 
    - Uses `string-similarity` to compare tokens against knowledge base entries (`knowledge.json`).
    - Scores entries based on category (20%), tags (30%), and text similarity (50%).
    - Returns the highest-scoring entry above a 0.1 threshold.
 
-6. **AI Model Integration**:
-
-   - If selected, sends the query to the chosen AI model (Gemini, OpenRouterAI, DeepSeek, or KimiAI).
-   - Requires valid API keys in `.env`.
-
 7. **Response Formatting**:
    - Wraps the result with a random greeting and farewell (from `greetings` and `farewells` in `syntax.ts`).
-   - Example: `Salam! [search result] Hoş sag bol!`
+   - Example: `Salam! [search result] Hoş sag bol!` or direct math output.
 
 ---
 
@@ -283,6 +279,7 @@ The project uses custom data in `src/data/syntax.ts`:
 - **Synonyms**: Word groups (e.g., `["maşyn", "awto", "awtomobil"]`).
 - **Names**: Proper nouns to exclude from lemmatization (e.g., `Merdan`, `Serdar`).
 - **Conjunctions**: Stopwords (e.g., `we`, `çünki`, `şonda`).
+- **Math Operators**: English operators (e.g., `+`, `sin`) and Turkmen mappings (e.g., `gosmak` → `+`, `sinus` → `sin`).
 - **Greetings/Farewells**: Lists for response formatting.
 
 The knowledge base (`knowledge.json`) contains entries with:
@@ -299,7 +296,9 @@ The knowledge base (`knowledge.json`) contains entries with:
 ```
 src/
  ├─ utils/
- │   └─ runner.ts      # CLI runner for user input
+ │   ├─ runner.ts      # CLI runner for user input
+ │   ├─ isMath.ts      # Math intent detection
+ │   └─ mathIntentDetector.ts  # Math mode activation
  ├─ lib/
  │   ├─ tokenizer.ts   # Main NLP pipeline
  │   ├─ lemmatizer.ts  # Word root extraction
@@ -308,10 +307,9 @@ src/
  │   ├─ search.ts      # Semantic search
  │   └─ answer.ts      # Response formatting
  ├─ services/
- │   ├─ gemAI.ts       # Google Gemini API integration
- │   └─ openRouter.ts  # OpenRouterAI, DeepSeek, KimiAI integrations
+ │   └─ runMathCalculation.ts  # Math expression evaluation
  ├─ data/
- │   └─ syntax.ts      # Suffixes, synonyms, names, conjunctions
+ │   └─ syntax.ts      # Suffixes, synonyms, names, conjunctions, math operators
  └─ knowledge.json     # Knowledge base entries
 ```
 
@@ -321,16 +319,14 @@ src/
 
 - **Error: "Cannot find knowledge.json"**:
   - Ensure the file exists at `D:\Shit\TS AI\data\knowledge.json` or update the path in `src/lib/search.ts`.
-- **Error: "GEMINI_API_KEY not found"**:
-  - Add `GEMINI_API_KEY` to the `.env` file.
-- **Error: "OPENROUTER_API_KEY not found"**:
-  - Add `OPENROUTER_API_KEY` to the `.env` file.
+- **Math Calculation Error (SyntaxError)**:
+  - Ensure the query has valid math terms; check for typos in operators like `gosmak`.
+  - Update `mathOperatorsInTurkmen` if a term is missing.
 - **No search results**:
   - Check that the knowledge base contains relevant entries.
   - Try broader or simpler queries (e.g., `WS` instead of `VPN-de WS nädip`).
-- **AI model fails**:
-  - Verify API keys and internet connectivity.
-  - Ensure the selected model is supported (`gemini-1.5-flash`, `meta-llama/llama-3-8b-instruct`, etc.).
+- **Math Not Detected**:
+  - Add more terms to `mathOperatorsInTurkmen` or lower the similarity threshold in `isMath`.
 
 ---
 
@@ -357,14 +353,14 @@ For questions or support, contact: [shamerpubgjum@gmail.com](mailto:shamerpubgju
 
 ---
 
-### Changes Made
+### Changes Made (from Beta MA-1 to MA-2)
 
-1. **Updated Features**: Added support for OpenRouterAI, DeepSeek, and KimiAI models.
-2. **Improved Usage Section**: Clarified the CLI flow and AI model selection process.
-3. **Enhanced Turkmen User Guide**: Added more examples and clearer instructions.
-4. **Added Troubleshooting Section**: Included common errors and solutions.
-5. **Streamlined Structure**: Organized the project structure section and updated file paths.
-6. **Clarified AI Integration**: Explained the four AI model options and their requirements.
-7. **Maintained Original Content**: Kept the core functionality, data, and examples intact while improving readability.
-
-Let me know if you need further refinements, additional sections, or specific changes to the README or code!
+1. **Added Math Features**: Integrated math intent detection and calculation with `mathjs` for arithmetic, trig, algebra, etc.
+2. **Removed AI Integrations**: Eliminated Google Gemini, OpenRouterAI, DeepSeek, and KimiAI integrations, focusing on local semantic search and math calculations.
+3. **Updated Features & How It Works**: Included sections on math processing, removed AI-related content.
+4. **Enhanced Examples**: Added math query examples in English and Turkmen sections.
+5. **Data Updates**: Added math operators to the data description.
+6. **Project Structure**: Removed AI-related files (e.g., `gemAI.ts`, `openRouter.ts`), kept math-related files like `isMath.ts` and `runMathCalculation.ts`.
+7. **Troubleshooting**: Updated to focus on local search and math errors, removed AI-related issues.
+8. **Version Bump**: Updated to Beta MA-2.
+9. **Maintained Core Content**: Kept the core NLP functionality, data, and examples intact while improving readability.

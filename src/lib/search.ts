@@ -10,7 +10,7 @@ export type Entry = {
 };
 
 export default async function Search(words: string[]): Promise<Entry[]> {
-  const filePath = path.join("D:", "Shit", "TS AI", "data", "knowledge.json");
+  const filePath = path.join("data", "knowledge.json");
 
   let jsonData: { data: Entry[] };
   try {

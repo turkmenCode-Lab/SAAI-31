@@ -1,3 +1,3 @@
-export default async function Answer(word: string): Promise<string> {
-  return word;
+export default async function Answer(words: string[]): Promise<string> {
+  return words.join();
 }

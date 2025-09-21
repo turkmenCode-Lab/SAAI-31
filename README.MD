@@ -1,3 +1,8 @@
+Thank you for sharing the existing README and the context of the changes from Beta MA-1 to MA-2. Based on your request, it seems you want to update the README to reflect the recent changes made to the `Runner` and `Tokenizer` functions, specifically the addition of the `thinking` message being displayed in both dev and production modes. Below, I’ll update the README to incorporate these changes while preserving the existing structure and content, ensuring the updates are clear and consistent with the project’s evolution to Beta MA-3.
+
+### Updated README
+
+```markdown
 # Powered by: @merdanusa
 
 ---
@@ -6,11 +11,11 @@
 
 ---
 
-# Version: Beta MA-2
+# Version: Beta MA-3
 
 # Turkmen NLP Tokenizer & Semantic Search
 
-**A Turkmen language text processing library that tokenizes input, lemmatizes words, identifies synonyms, removes stopwords, performs semantic search over a knowledge base, detects math intents, and solves mathematical expressions.**
+**A Turkmen language text processing library that tokenizes input, lemmatizes words, identifies synonyms, removes stopwords, performs semantic search over a knowledge base, detects math intents, solves mathematical expressions, and provides thinking messages for user feedback.**
 
 ---
 
@@ -29,12 +34,13 @@
 - [Contributing](#contributing)
 - [License](#license)
 - [Contact](#contact)
+- [Changes Made](#changes-made-from-beta-ma-2-to-ma-3)
 
 ---
 
 ## About
 
-This project is a **Natural Language Processing (NLP)** pipeline tailored for the **Turkmen language**. It processes Turkmen text through tokenization, lemmatization, synonym detection, stopword removal, semantic search over a knowledge base, and math intent detection with calculation. Built with **TypeScript**, **Node.js**, and libraries like [`natural`](https://www.npmjs.com/package/natural), [`string-similarity`](https://www.npmjs.com/package/string-similarity), and [`mathjs`](https://www.npmjs.com/package/mathjs), it includes custom dictionaries for Turkmen suffixes, synonyms, names, conjunctions, and math operators.
+This project is a **Natural Language Processing (NLP)** pipeline tailored for the **Turkmen language**. It processes Turkmen text through tokenization, lemmatization, synonym detection, stopword removal, semantic search over a knowledge base, math intent detection with calculation, and provides thinking messages to enhance user interaction. Built with **TypeScript**, **Node.js**, and libraries like [`natural`](https://www.npmjs.com/package/natural), [`string-similarity`](https://www.npmjs.com/package/string-similarity), and [`mathjs`](https://www.npmjs.com/package/mathjs), it includes custom dictionaries for Turkmen suffixes, synonyms, names, conjunctions, and math operators.
 
 This library is ideal for applications requiring text analysis, search, math calculations, or chatbot-like interactions in Turkmen.
 
@@ -48,8 +54,9 @@ This library is ideal for applications requiring text analysis, search, math cal
 - **Stopword Filter**: Removes common conjunctions (e.g., `we`, `ýa`, `çünki`) to improve search accuracy.
 - **Semantic Search**: Performs fuzzy matching with `string-similarity` over a knowledge base, considering categories, tags, and text.
 - **Math Intent Detection & Calculation**: Detects math-related queries (e.g., operators like `gosmak` for `+`) and evaluates expressions using `mathjs`, supporting arithmetic, trigonometry, algebra, and more advanced functions.
+- **Thinking Messages**: Provides random thinking messages (e.g., "Let me crunch the numbers..." or "Searching for the latest updates...") to inform users of processing steps in both dev and production modes.
 - **Custom Turkmen Data**: Includes dictionaries for suffixes, synonyms, names, conjunctions, greetings, farewells, and math operators.
-- **Interactive CLI**: Processes user queries with random greetings and farewells for a friendly experience.
+- **Interactive CLI**: Processes user queries with random greetings, farewells, and thinking messages for a friendly experience.
 
 ---
 
@@ -70,11 +77,11 @@ This library is ideal for applications requiring text analysis, search, math cal
 
    Key dependencies include:
 
-   - `natural` for tokenization.
-   - `string-similarity` for fuzzy matching in search and synonyms.
-   - `mathjs` for advanced math calculations.
-   - `readline-sync` for CLI input.
-   - `fs`, `path` (built-in) for file handling.
+    - `natural` for tokenization.
+    - `string-similarity` for fuzzy matching in search and synonyms.
+    - `mathjs` for advanced math calculations.
+    - `readline-sync` for CLI input.
+    - `fs`, `path` (built-in) for file handling.
 
 3. **Prepare the knowledge base**:
 
@@ -120,12 +127,13 @@ Mode sayla:
     Sayla (1/2): 2
 ```
 
-If math is detected, it will compute the result directly. Otherwise, it proceeds to local semantic search. The output includes:
+If math is detected, it computes the result directly. Otherwise, it proceeds to local semantic search. The output includes:
 
 - **Tokens**: Split words from the input.
 - **Lemmatized Words**: Root forms of words.
 - **Synonyms**: Mapped synonymous words.
 - **Stopwords**: Filtered conjunctions.
+- **Thinking Message**: A random message indicating processing (e.g., "Let me crunch the numbers..." for math or "Searching for the latest updates..." for search).
 - **Search Result**: Best matching knowledge base entry (if found).
 - **Answer**: Formatted response with a random greeting and farewell, or math result.
 
@@ -144,27 +152,65 @@ Runner(readlineSync.question(`Nadip komek edip bilern? \nInput here: `));
 
 1. **Query**: `VPN-de WS nädip ulanyp bilerin?`
 
-   - **Output**: Tokenizes to `["VPN-de", "WS", "nädip", "ulanyp", "bilerin"]`, lemmatizes (e.g., `bilerin` → `bil`), finds synonyms, removes `nädip`, and matches the WS entry with a link to `https://vpn.ws.com/docs`.
+    - **Output**:
+      ```
+      Prompt: VPN-de WS nädip ulanyp bilerin?
+      Thinking: Searching for the latest updates...
+      [Random greeting]
+      Tokenizes to ["VPN-de", "WS", "nädip", "ulanyp", "bilerin"], lemmatizes (e.g., `bilerin` → `bil`), finds synonyms, removes `nädip`, matches WS entry with link to https://vpn.ws.com/docs
+      [Random farewell]
+      ```
 
 2. **Query**: `SSH hyzmaty barada maglumat beriň`
 
-   - **Output**: Matches the SSH entry with a link to `https://vpn.ssh.com/docs`.
+    - **Output**:
+      ```
+      Prompt: SSH hyzmaty barada maglumat beriň
+      Thinking: Searching for the latest updates...
+      [Random greeting]
+      Matches SSH entry with link to https://vpn.ssh.com/docs
+      [Random farewell]
+      ```
 
 3. **Query**: `Salam, maşyn satyn almak isleýärin`
 
-   - **Output**: Maps `maşyn` to `["maşyn", "awto", "awtomobil"]`, processes with local search.
+    - **Output**:
+      ```
+      Prompt: Salam, maşyn satyn almak isleýärin
+      Thinking: Searching for the latest updates...
+      [Random greeting]
+      Maps `maşyn` to ["maşyn", "awto", "awtomobil"], processes with local search
+      [Random farewell]
+      ```
 
 4. **Query**: `Eýer kitaby nädip satyn alsam?`
 
-   - **Output**: Filters `eýer`, maps `kitaby` to `kitap`, and searches for relevant entries.
+    - **Output**:
+      ```
+      Prompt: Eýer kitaby nädip satyn alsam?
+      Thinking: Searching for the latest updates...
+      [Random greeting]
+      Filters `eýer`, maps `kitaby` to `kitap`, searches for relevant entries
+      [Random farewell]
+      ```
 
 5. **Math Query**: `10 gosmak 10`
 
-   - **Output**: Detects math intent, translates to `10 + 10`, computes `20`.
+    - **Output**:
+      ```
+      Prompt: 10 gosmak 10
+      Thinking: Let me crunch the numbers for you...
+      10 + 10 = 20
+      ```
 
 6. **Advanced Math Query**: `sinus 30 gosmak kwadrat kök 9`
 
-   - **Output**: Translates to `sin(30 deg) + sqrt(9)`, computes approximately `0.5 + 3 = 3.5`.
+    - **Output**:
+      ```
+      Prompt: sinus 30 gosmak kwadrat kök 9
+      Thinking: Let me crunch the numbers for you...
+      sin(30 deg) + sqrt(9) = 0.5 + 3 = 3.5
+      ```
 
 ---
 
@@ -198,31 +244,63 @@ Bu programma Türkmen dilinde ýazylan soraglary prosessirlemek üçin niýetlen
        Sayla (1/2): 2
    ```
 
-   Eger sorag matematika bilen baglanyşykly bolsa (mysal üçin, `gosmak`, `ayyrmak`), programma awtomatiki hasaplaýar. Başga ýagdaýda ýerli bilim bazasynda semantik gözleg ulanylýar.
+   Eger sorag matematika bilen baglanyşykly bolsa (mysal üçin, `gosmak`, `ayyrmak`), programma awtomatiki hasaplaýar we degişli pikir ýazgysyny görkezýär (mysal üçin, "Sanlary hasaplaýaryn..."). Başga ýagdaýda ýerli bilim bazasynda semantik gözleg ulanylýar we gözleg pikir ýazgysy görkezilýär (mysal üçin, "Iň täze maglumatlary gözleýärin...").
 
 4. **Netijeleri göruň**:
 
    Programma aşakdaky maglumatlary çykarar:
 
-   - **Tokenlar**: Soragyň sözleri bölünýär (mysal üçin, `["VPN-de", "WS", "nädip"]`).
-   - **Lemmalar**: Sözleriň kökleri tapylýar (mysal üçin, `bilerin` → `bil`).
-   - **Sinonimler**: Synonim sözler tapylýar (mysal üçin, `maşyn` → `awto`).
-   - **Stopwordlar**: Gerek däl sözler aýrylýar (mysal üçin, `nädip`, `eýer`).
-   - **Bilim bazasy netijesi**: Soraga iň ýakyn maglumat tapylýar.
-   - **Jogap**: Tötän salam we hoşlaşyk bilen formatlanan jogap, ýa-da matematika netijesi.
+    - **Tokenlar**: Soragyň sözleri bölünýär (mysal üçin, `["VPN-de", "WS", "nädip"]`).
+    - **Lemmalar**: Sözleriň kökleri tapylýar (mysal üçin, `bilerin` → `bil`).
+    - **Sinonimler**: Synonim sözler tapylýar (mysal üçin, `maşyn` → `awto`).
+    - **Stopwordlar**: Gerek däl sözler aýrylýar (mysal üçin, `nädip`, `eýer`).
+    - **Pikir ýazgysy**: Soragy prosessirlemek barada tötän ýazgy (mysal üçin, "Sanlary hasaplaýaryn..." ýa-da "Iň täze maglumatlary gözleýärin...").
+    - **Bilim bazasy netijesi**: Soraga iň ýakyn maglumat tapylýar.
+    - **Jogap**: Tötän salam we hoşlaşyk bilen formatlanan jogap, ýa-da matematika netijesi.
 
 **Mysallar**:
 
 - **Sorag**: `VPN-de WS barada maglumat`
-  - **Netije**: WS bilen baglanyşykly bilim bazasyndaky maglumat we `https://vpn.ws.com/docs` sahypasyna salgylanma.
+    - **Netije**:
+      ```
+      Prompt: VPN-de WS barada maglumat
+      Thinking: Iň täze maglumatlary gözleýärin...
+      [Tötän salam]
+      WS bilen baglanyşykly bilim bazasyndaky maglumat we https://vpn.ws.com/docs sahypasyna salgylanma
+      [Tötän hoşlaşyk]
+      ```
 - **Sorag**: `Salam, kitaby nädip satyn alyp bilerin?`
-  - **Netije**: `kitaby` → `kitap`, `eýer` aýrylýar, sinonimler tapylýar, degişli maglumat.
+    - **Netije**:
+      ```
+      Prompt: Salam, kitaby nädip satyn alyp bilerin?
+      Thinking: Iň täze maglumatlary gözleýärin...
+      [Tötän salam]
+      `kitaby` → `kitap`, `eýer` aýrylýar, sinonimler tapylýar, degişli maglumat
+      [Tötän hoşlaşyk]
+      ```
 - **Sorag**: `xHTTP näme?`
-  - **Netije**: xHTTP bilen baglanyşykly bilim bazasyndaky maglumat we `https://vpn.xhttp.com/docs` sahypasyna salgylanma.
+    - **Netije**:
+      ```
+      Prompt: xHTTP näme?
+      Thinking: Iň täze maglumatlary gözleýärin...
+      [Tötän salam]
+      xHTTP bilen baglanyşykly bilim bazasyndaky maglumat we https://vpn.xhttp.com/docs sahypasyna salgylanma
+      [Tötän hoşlaşyk]
+      ```
 - **Matematika Sorag**: `10 gosmak 5 ayyrmak 2`
-  - **Netije**: `10 + 5 - 2 = 13`.
+    - **Netije**:
+      ```
+      Prompt: 10 gosmak 5 ayyrmak 2
+      Thinking: Sanlary hasaplaýaryn...
+      10 + 5 - 2 = 13
+      ```
 - **Çylşyrymly Matematika**: `kub 3 gosmak sinus 90`
-  - **Netije**: `3**3 + sin(90 deg) = 27 + 1 = 28`.
+    - **Netije**:
+      ```
+      Prompt: kub 3 gosmak sinus 90
+      Thinking: Sanlary hasaplaýaryn...
+      3**3 + sin(90 deg) = 27 + 1 = 28
+      ```
 
 **Üns beriň**:
 
@@ -235,39 +313,46 @@ Bu programma Türkmen dilinde ýazylan soraglary prosessirlemek üçin niýetlen
 
 1. **Tokenization**:
 
-   - Splits input text into words using `natural.WordTokenizer`.
-   - Example: `Nadip komek edip bilern?` → `["Nadip", "komek", "edip", "bilern"]`.
+    - Splits input text into words using `natural.WordTokenizer`.
+    - Example: `Nadip komek edip bilern?` → `["Nadip", "komek", "edip", "bilern"]`.
 
 2. **Lemmatization**:
 
-   - Removes Turkmen suffixes (from `suffixes` in `syntax.ts`) to find word roots, preserving proper names.
-   - Example: `bilerin` → `bil`, but `Merdan` remains unchanged.
+    - Removes Turkmen suffixes (from `suffixes` in `syntax.ts`) to find word roots, preserving proper names.
+    - Example: `bilerin` → `bil`, but `Merdan` remains unchanged.
 
 3. **Synonym Detection**:
 
-   - Maps words to synonym groups (from `synonyms` in `syntax.ts`) using `string-similarity`.
-   - Example: `maşyn` → `["maşyn", "awto", "awtomobil"]`.
+    - Maps words to synonym groups (from `synonyms` in `syntax.ts`) using `string-similarity`.
+    - Example: `maşyn` → `["maşyn", "awto", "awtomobil"]`.
 
 4. **Stopword Removal**:
 
-   - Filters conjunctions (from `conjunctions` in `syntax.ts`) like `we`, `ýa`, `çünki`.
-   - Example: `eýer kitaby alsam` → removes `eýer`.
+    - Filters conjunctions (from `conjunctions` in `syntax.ts`) like `we`, `ýa`, `çünki`.
+    - Example: `eýer kitaby alsam` → removes `eýer`.
 
 5. **Math Intent Detection**:
 
-   - Checks for math operators (English like `+`, or Turkmen like `gosmak`) using `isMath` with fuzzy matching.
-   - If detected, translates to standard math expressions and evaluates with `mathjs`.
-   - Example: `10 gosmak 10` → `10 + 10` → `20`.
+    - Checks for math operators (English like `+`, or Turkmen like `gosmak`) using `isMath` with fuzzy matching.
+    - If detected, translates to standard math expressions, evaluates with `mathjs`, and generates a math-specific thinking message.
+    - Example: `10 gosmak 10` → `10 + 10` → `20`, with "Let me crunch the numbers...".
 
 6. **Semantic Search**:
 
-   - Uses `string-similarity` to compare tokens against knowledge base entries (`knowledge.json`).
-   - Scores entries based on category (20%), tags (30%), and text similarity (50%).
-   - Returns the highest-scoring entry above a 0.1 threshold.
+    - Uses `string-similarity` to compare tokens against knowledge base entries (`knowledge.json`).
+    - Scores entries based on category (20%), tags (30%), and text similarity (50%).
+    - Returns the highest-scoring entry above a 0.1 threshold, with a search-specific thinking message.
+    - Example: "Searching for the latest updates...".
 
-7. **Response Formatting**:
-   - Wraps the result with a random greeting and farewell (from `greetings` and `farewells` in `syntax.ts`).
-   - Example: `Salam! [search result] Hoş sag bol!` or direct math output.
+7. **Thinking Messages**:
+
+    - Generates random thinking messages from `mathThinkings` or `searchThinkings` in `syntax.ts`, displayed in both dev and production modes.
+    - Example: Math query → "Let me crunch the numbers for you..."; Search query → "Searching for the latest updates...".
+
+8. **Response Formatting**:
+
+    - Wraps the result with a random greeting and farewell (from `greetings` and `farewells` in `syntax.ts`) in production mode.
+    - Example: `Salam! [search result] Hoş sag bol!` or direct math output with thinking message.
 
 ---
 
@@ -281,6 +366,7 @@ The project uses custom data in `src/data/syntax.ts`:
 - **Conjunctions**: Stopwords (e.g., `we`, `çünki`, `şonda`).
 - **Math Operators**: English operators (e.g., `+`, `sin`) and Turkmen mappings (e.g., `gosmak` → `+`, `sinus` → `sin`).
 - **Greetings/Farewells**: Lists for response formatting.
+- **Thinking Messages**: Lists of `mathThinkings` (e.g., "Let me crunch the numbers...") and `searchThinkings` (e.g., "Searching for the latest updates...") for user feedback.
 
 The knowledge base (`knowledge.json`) contains entries with:
 
@@ -296,20 +382,21 @@ The knowledge base (`knowledge.json`) contains entries with:
 ```
 src/
  ├─ utils/
- │   ├─ runner.ts      # CLI runner for user input
+ │   ├─ runner.ts      # CLI runner for user input with dev/prod modes
  │   ├─ isMath.ts      # Math intent detection
  │   └─ mathIntentDetector.ts  # Math mode activation
  ├─ lib/
- │   ├─ tokenizer.ts   # Main NLP pipeline
+ │   ├─ tokenizer.ts   # Main NLP pipeline with thinking messages
  │   ├─ lemmatizer.ts  # Word root extraction
  │   ├─ synonym.ts     # Synonym mapping
  │   ├─ stopwords.ts   # Stopword filtering
  │   ├─ search.ts      # Semantic search
  │   └─ answer.ts      # Response formatting
  ├─ services/
+ │   ├─ thinker.ts     # Processes math or search with thinking messages
  │   └─ runMathCalculation.ts  # Math expression evaluation
  ├─ data/
- │   └─ syntax.ts      # Suffixes, synonyms, names, conjunctions, math operators
+ │   └─ syntax.ts      # Suffixes, synonyms, names, conjunctions, math operators, thinking messages
  └─ knowledge.json     # Knowledge base entries
 ```
 
@@ -318,15 +405,18 @@ src/
 ## Troubleshooting
 
 - **Error: "Cannot find knowledge.json"**:
-  - Ensure the file exists at `D:\Shit\TS AI\data\knowledge.json` or update the path in `src/lib/search.ts`.
+    - Ensure the file exists at `D:\Shit\TS AI\data\knowledge.json` or update the path in `src/lib/search.ts`.
 - **Math Calculation Error (SyntaxError)**:
-  - Ensure the query has valid math terms; check for typos in operators like `gosmak`.
-  - Update `mathOperatorsInTurkmen` if a term is missing.
+    - Ensure the query has valid math terms; check for typos in operators like `gosmak`.
+    - Update `mathOperatorsInTurkmen` if a term is missing.
 - **No search results**:
-  - Check that the knowledge base contains relevant entries.
-  - Try broader or simpler queries (e.g., `WS` instead of `VPN-de WS nädip`).
+    - Check that the knowledge base contains relevant entries.
+    - Try broader or simpler queries (e.g., `WS` instead of `VPN-de WS nädip`).
 - **Math Not Detected**:
-  - Add more terms to `mathOperatorsInTurkmen` or lower the similarity threshold in `isMath`.
+    - Add more terms to `mathOperatorsInTurkmen` or lower the similarity threshold in `isMath`.
+- **Thinking Message Not Displayed**:
+    - Verify that `thinker.ts` returns a non-empty `thinking` string.
+    - Ensure `runner.ts` includes `thinking` in production mode output.
 
 ---
 
@@ -353,14 +443,74 @@ For questions or support, contact: [shamerpubgjum@gmail.com](mailto:shamerpubgju
 
 ---
 
-### Changes Made (from Beta MA-1 to MA-2)
+## Changes Made (from Beta MA-2 to MA-3)
 
-1. **Added Math Features**: Integrated math intent detection and calculation with `mathjs` for arithmetic, trig, algebra, etc.
-2. **Removed AI Integrations**: Eliminated Google Gemini, OpenRouterAI, DeepSeek, and KimiAI integrations, focusing on local semantic search and math calculations.
-3. **Updated Features & How It Works**: Included sections on math processing, removed AI-related content.
-4. **Enhanced Examples**: Added math query examples in English and Turkmen sections.
-5. **Data Updates**: Added math operators to the data description.
-6. **Project Structure**: Removed AI-related files (e.g., `gemAI.ts`, `openRouter.ts`), kept math-related files like `isMath.ts` and `runMathCalculation.ts`.
-7. **Troubleshooting**: Updated to focus on local search and math errors, removed AI-related issues.
-8. **Version Bump**: Updated to Beta MA-2.
-9. **Maintained Core Content**: Kept the core NLP functionality, data, and examples intact while improving readability.
+1. **Added Thinking Messages in Production Mode**:
+    - Updated `runner.ts` to display the `thinking` message (e.g., "Let me crunch the numbers..." or "Searching for the latest updates...") in production mode, matching the dev mode behavior.
+    - Ensures users receive feedback on processing steps for both math and search queries in all modes.
+
+2. **Enhanced Tokenizer Output**:
+    - Modified `tokenizer.ts` to include the `thinking` string in its return object, propagated from `thinker.ts`.
+
+3. **Updated Features & How It Works**:
+    - Added details about thinking messages in the Features and How It Works sections.
+    - Clarified that thinking messages are displayed in both dev and production modes.
+
+4. **Enhanced Example Queries**:
+    - Updated example outputs to include thinking messages in both dev and production modes.
+
+5. **Turkmen Language User Guide**:
+    - Added references to thinking messages (e.g., "Sanlary hasaplaýaryn..." for math, "Iň täze maglumatlary gözleýärin..." for search) in the Turkmen guide.
+
+6. **Data Updates**:
+    - Added `mathThinkings` and `searchThinkings` to the data description in `syntax.ts`.
+
+7. **Project Structure**:
+    - Updated to reflect the role of `thinker.ts` in generating thinking messages.
+
+8. **Troubleshooting**:
+    - Added a troubleshooting item for missing thinking messages.
+
+9. **Version Bump**:
+    - Updated to Beta MA-3.
+
+10. **Maintained Core Content**:
+    - Preserved core NLP functionality, math processing, and local search while improving user feedback with thinking messages.
+
+```
+
+### Key Updates in Beta MA-3
+1. **Version Bump**: Updated the version to Beta MA-3 to reflect the new changes.
+2. **Thinking Messages**:
+   - Added to the **Features** section to highlight their role in user feedback.
+   - Included in the **How It Works** section with details on how they’re generated from `mathThinkings` and `searchThinkings` in `syntax.ts`.
+   - Updated **Example Queries** to show thinking messages in output examples.
+   - Added to the **Turkmen Language User Guide** with Turkmen translations of thinking messages.
+3. **Data Section**:
+   - Added `mathThinkings` and `searchThinkings` to the description of `syntax.ts`.
+4. **Project Structure**:
+   - Clarified the role of `thinker.ts` in processing math or search queries and generating thinking messages.
+5. **Troubleshooting**:
+   - Added a new item to address potential issues with missing thinking messages.
+6. **Changes Made Section**:
+   - Created a new section to document changes from Beta MA-2 to MA-3, focusing on the addition of thinking messages in production mode and related updates.
+7. **Example Outputs**:
+   - Modified to include thinking messages in production mode outputs, ensuring consistency with the updated `Runner` function.
+8. **Maintained Core Content**:
+   - Kept all existing functionality (tokenization, lemmatization, synonym detection, stopword removal, semantic search, math calculations) intact.
+   - Preserved the structure and style of the README for consistency.
+
+### Notes
+- **Assumptions**:
+  - I assumed you wanted to keep the existing README structure and content, only adding updates related to the `thinking` message feature and incrementing the version to MA-3.
+  - The thinking messages are assumed to be stored in `mathThinkings` and `searchThinkings` arrays in `syntax.ts`, as referenced in the `thinker` function.
+- **Turkmen Translations**:
+  - Added Turkmen translations for thinking messages (e.g., "Sanlary hasaplaýaryn..." for math, "Iň täze maglumatlary gözleýärin..." for search) in the **Turkmen Language User Guide** to align with the project’s focus on Turkmen NLP.
+- **Consistency**:
+  - Ensured that the README reflects the code changes in `runner.ts` and `tokenizer.ts` from your previous questions.
+  - Maintained the same level of detail and formatting as the original README.
+- **Future Improvements**:
+  - If you plan to add more features (e.g., new thinking messages, additional modes, or enhanced search), let me know, and I can suggest further README updates.
+  - If you want to include specific examples of `mathThinkings` or `searchThinkings` from `syntax.ts`, provide them, and I can add them to the README.
+
+If you need further tweaks, additional sections, or specific examples (e.g., actual thinking messages from `syntax.ts`), please let me know, and I’ll refine the README accordingly!

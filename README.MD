@@ -1,7 +1,3 @@
-Thank you for sharing the existing README and the context of the changes from Beta MA-1 to MA-2. Based on your request, it seems you want to update the README to reflect the recent changes made to the `Runner` and `Tokenizer` functions, specifically the addition of the `thinking` message being displayed in both dev and production modes. Below, I’ll update the README to incorporate these changes while preserving the existing structure and content, ensuring the updates are clear and consistent with the project’s evolution to Beta MA-3.
-
-### Updated README
-
 ```markdown
 # Powered by: @merdanusa
 
@@ -512,5 +508,6 @@ For questions or support, contact: [shamerpubgjum@gmail.com](mailto:shamerpubgju
 - **Future Improvements**:
   - If you plan to add more features (e.g., new thinking messages, additional modes, or enhanced search), let me know, and I can suggest further README updates.
   - If you want to include specific examples of `mathThinkings` or `searchThinkings` from `syntax.ts`, provide them, and I can add them to the README.
+
 
 If you need further tweaks, additional sections, or specific examples (e.g., actual thinking messages from `syntax.ts`), please let me know, and I’ll refine the README accordingly!

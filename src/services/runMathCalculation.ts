@@ -1,5 +1,5 @@
 import Algebrite from "algebrite";
-import { mathOperatorsInTurkmen } from "../assets/syntax";
+import { mathOperatorsInTurkmen } from "../assets/math/operators";
 
 export default async function runMathCalculation(input: string): Promise<string> {
     try {

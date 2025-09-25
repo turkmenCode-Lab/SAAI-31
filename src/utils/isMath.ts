@@ -1,26 +1,23 @@
 import stringSimilarity from "string-similarity";
-import { mathOperators, mathOperatorsInTurkmen } from "../assets/syntax";
+import { operators, mathOperatorsInTurkmen } from "../assets/math/operators";
 
 export default function isMath(prompt: string): boolean {
-    const lowerPrompt = prompt.toLowerCase();
-
-    if (mathOperators.some((op) => lowerPrompt.includes(op))) return true;
-
-    if (Object.keys(mathOperatorsInTurkmen).some((key) => lowerPrompt.includes(key))) {
-        return true;
-    }
-
-    const turkmenKeys = Object.keys(mathOperatorsInTurkmen);
-    const threshold = 0.8;
-    for (const key of turkmenKeys) {
-        const similarity = stringSimilarity.compareTwoStrings(key, lowerPrompt);
-        if (similarity >= threshold) return true;
-    }
+    const lowerPrompt = prompt.toLowerCase().trim();
 
     if (!/\d/.test(lowerPrompt)) return false;
 
-    if (/[a-z0-9]+\s*[\+\-\*\/\%\^]\s*[a-z0-9]+/.test(lowerPrompt)) return true;
-    if (/(sin|cos|tan|cot|sec|csc|asin|acos|atan|log|ln|exp|sqrt|cbrt|pi)\s*\(?\d+\)?/.test(lowerPrompt)) {
+    if (operators.some(op => lowerPrompt.includes(op))) return true;
+
+    if (Object.keys(mathOperatorsInTurkmen).some(key => lowerPrompt.includes(key))) return true;
+
+    const threshold = 0.9;
+    for (const key of Object.keys(mathOperatorsInTurkmen)) {
+        if (stringSimilarity.compareTwoStrings(key, lowerPrompt) >= threshold) return true;
+    }
+
+    if (/[0-9]+\s*[\+\-\*\/\%\^]\s*[0-9]+/.test(lowerPrompt)) return true;
+
+    if (/(sin|cos|tan|cot|sec|csc|asin|acos|atan|log|ln|exp|sqrt|cbrt|pi)\s*\(?[0-9]*\)?/.test(lowerPrompt)) {
         return true;
     }
 
